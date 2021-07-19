@@ -2,9 +2,11 @@ let addElementOne = document.querySelector('.add-element');
 let addElementTwo = document.querySelector('.add-element-two');
 let deleteBook = document.querySelector('.delete-book');
 let knowInfo = document.querySelector('.know-info');
+let allBooks = document.getElementById('list-books');
 
 
 let storeOfBooks = [];
+let value = 0;
 
 class Book {
    constructor (name, avtor, id, colOfPage) {
@@ -24,15 +26,16 @@ class TravelBook extends Book {
    }
    addBook(nameOfBook, avtr, pages, wrap) {
       storeOfBooks.push([nameOfBook, this.id, avtr, pages, wrap]);
+      console.log(storeOfBooks)
+      showBookInSity();
       return storeOfBooks;
    }
    deleteBook(elementForDelete) {
       for (let i = 0; i < storeOfBooks.length; i++) {
          if (storeOfBooks[i][0] === elementForDelete) {
             alert('Ваш элемент был успешно удалён');
-            return storeOfBooks[i].splice(0, 5)
-         } else {
-            return console.log('такого элемента нету')
+            storeOfBooks[i].splice(0, 5)
+            console.log(storeOfBooks)
          }
       }
    }
@@ -40,14 +43,11 @@ class TravelBook extends Book {
       for (let i = 0; i < storeOfBooks.length; i++) {
          if (storeOfBooks[i][0] === inf) {
             alert(storeOfBooks[i]);
-         } else {
-            return console.log('такого элемента нету')
          }
       }
    }
 
 }
-
 
 class Comics extends TravelBook {
    constructor (namberOfComics, name, avtor, id, colOfPage) {
@@ -56,6 +56,8 @@ class Comics extends TravelBook {
    }
    addClickComiks(namberOfComics, avtr, pages, number) {
       storeOfBooks.push([namberOfComics, this.id, avtr, pages, number]);
+      console.log(storeOfBooks)
+      showBookInSity();
       return storeOfBooks;
    }
 }
@@ -86,17 +88,40 @@ const addClickComiks = (event, nam, avtor, colOfPage, nomer) => {
 }
 
 const clickDeleteBook = (nameBook) => {
-   nameBook = prompt('Какую книгу удалить?', 'аватар')
    travel.deleteBook(nameBook);
 }
 
 const getInfo = (info) => {
-   info = prompt('Название?', 'аватар');
    travel.getAllInfo(info);
 }
 
-knowInfo.addEventListener('click', getInfo)
-deleteBook.addEventListener('click', clickDeleteBook)
+const showBookInSity = () => {
+   allBooks.innerHTML += `
+   <ul>
+      <li>${storeOfBooks[value][0]}</li>
+      <li>${storeOfBooks[value][2]}</li>
+      <li><button class="delete-book">удалить</button> <button class="know-info">подробнее</button></li>
+   </ul>
+   `
+   value++
+}
+const delElement = (event) => {
+   if (event.target.textContent !== 'удалить') {
+      return
+   }
+   let element = event.target.parentElement.parentElement.children[0].textContent
+   clickDeleteBook(element);
+   event.target.parentElement.parentElement.remove();
+}
+const showInfo = (event) => {
+   if (event.target.textContent !== 'подробнее') {
+      return
+   }
+   let element = event.target.parentElement.parentElement.children[0].textContent
+   getInfo(element)
+}
+allBooks.addEventListener('click', showInfo);
+allBooks.addEventListener('click', delElement);
 addElementOne.addEventListener('click', addClickBooks)
 addElementTwo.addEventListener('click', addClickComiks)
 
